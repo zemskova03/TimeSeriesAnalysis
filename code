@@ -1,0 +1,17 @@
+1. Используйте функцию окна lead() для создания нового столбца sales_next, который отображает продажи в следующей строке набора данных.
+  
+select row_id,order_id,product_id,sales,lead (sales) over() as sales_next,cast(lead (sales) over()-sales as numeric(10,2))as difference  from draft1
+!(еще нашла разницу между текущими и следующими продажами)
+  
+2. Создайте новый столбец sales_previous для отображения значений строки над заданной строкой.
+select row_id,order_id,product_id,sales,lag (sales,1,0) over() as sales_previous,cast(sales-lag (sales) over() as numeric(10,2))as difference from draft1
+!(еще нашла разницу между текущими и предыдущими продажами)
+
+3. Ранжируйте данные на основе продаж в порядке убывания, используя функцию RANK().
+select row_id,order_id,product_id,sales,RANK() over(order by sales desc) from draft1
+  
+4.Используйте обычные команды SQL и агрегированные функции для отображения средних показателей продаж за месяц и день.
+  select date_part('month',order_date) as month ,date_part('day',order_date) as day,cast(avg(sales) as numeric(10,2)) from draft1
+
+5.Оценивайте скользящие средние с помощью оконных функций.
+  select row_id,order_id,product_id,sales,cast(avg(sales) over(ORDER BY row_id ROWS BETWEEN 6 PRECEDING  AND current row)as numeric(10,2)) as ma7 from draft1
